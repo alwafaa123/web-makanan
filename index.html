@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNIFOOD - Platform Jual Beli Makanan Mahasiswa</title>
+    <link rel="stylesheet" href="css/food.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="logo-section">
+          <img src="image/logo.png" alt="UNIFOOD Logo" class="logo" />
+          <span class="logo-text">UNIFOOD</span>
+        </div>
+
+        <div class="search-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Cari makanan, minuman, atau penjual..."
+          />
+        </div>
+
+        <button class="login-btn" id="loginBtn">Login</button>
+      </div>
+    </header>
+
+    <nav class="category-nav">
+      <div class="category-container">
+        <button class="category-btn" onclick="scrollToCategory('makanan')">
+          🍛 Makanan
+        </button>
+        <button class="category-btn" onclick="scrollToCategory('minuman')">
+          🥤 Minuman
+        </button>
+        <button class="category-btn" onclick="scrollToCategory('snack')">
+          🍪 Snack
+        </button>
+        <button class="category-btn" onclick="scrollToCategory('lainnya')">
+          🛍️ Lainnya
+        </button>
+      </div>
+    </nav>
+
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">🍜 Selamat Datang di UNIFOOD</h1>
+        <p class="hero-subtitle">
+          Platform jual beli makanan, minuman, dan jasa khusus mahasiswa. Pesan
+          sekarang, nikmati kemudahan!
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">100+</span>
+            <span class="stat-label">Menu Tersedia</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Penjual Aktif</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">4.8⭐</span>
+            <span class="stat-label">Rating Rata-rata</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="category-section" id="makanan">
+        <h2 class="category-title">🍛 Makanan</h2>
+        <div class="menu-grid" id="makananGrid"></div>
+        <div class="view-more">
+          <a
+            href="#"
+            class="view-more-link"
+            onclick="viewMore(event, 'makanan')"
+            >View more...</a
+          >
+        </div>
+      </section>
+
+      <section class="category-section" id="minuman">
+        <h2 class="category-title">🥤 Minuman</h2>
+        <div class="menu-grid" id="minumanGrid"></div>
+        <div class="view-more">
+          <a
+            href="#"
+            class="view-more-link"
+            onclick="viewMore(event, 'minuman')"
+            >View more...</a
+          >
+        </div>
+      </section>
+
+      <section class="category-section" id="snack">
+        <h2 class="category-title">🍪 Snack</h2>
+        <div class="menu-grid" id="snackGrid"></div>
+        <div class="view-more">
+          <a href="#" class="view-more-link" onclick="viewMore(event, 'snack')"
+            >View more...</a
+          >
+        </div>
+      </section>
+
+      <section class="category-section" id="lainnya">
+        <h2 class="category-title">🛍️ Lainnya</h2>
+        <div class="menu-grid" id="lainnyaGrid"></div>
+        <div class="view-more">
+          <a
+            href="#"
+            class="view-more-link"
+            onclick="viewMore(event, 'lainnya')"
+            >View more...</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p class="footer-disclaimer">
+        ⚠️ UNIFOOD hanya sebagai platform penghubung antara penjual dan pembeli.
+      </p>
+      <p class="footer-copyright">© 2025 UNIFOOD. All rights reserved.</p>
+    </footer>
+
+    <div class="modal" id="loginModal">
+      <div class="modal-content">
+        <h2 class="modal-title">Login / Daftar (Email)</h2>
+        <input
+          type="email"
+          class="modal-input"
+          id="emailInput"
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          class="modal-input"
+          id="passwordInput"
+          placeholder="Password"
+        />
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 8px;
+          "
+        >
+          <button class="modal-btn" onclick="handleLogin()">Login</button>
+          <button class="modal-btn" onclick="registerUser()">Daftar</button>
+          <button class="modal-btn modal-cancel" onclick="closeModal()">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ============================================
+      // KONFIGURASI API SHEETDB
+      // ============================================
+      const SHEETDB_API_URL = "https://sheetdb.io/api/v1/qchkgufhn22gu";
+
+      // ============================================
+      // DATA MENU (HARDCODED - BELUM MENGGUNAKAN DATABASE)
+      // ============================================
+
+      const menuData = {
+        makanan: [
+          {
+            nama: "Nasi Goreng Special",
+            penjual: "Warung Pak Budi",
+            lokasi: "Asrama Al-Fatih",
+            stok: 15,
+            rating: 4.8,
+            harga: 15000,
+            wa: "085708923236",
+            image: "image/nasi goreng.jpeg",
+          },
+          {
+            nama: "Ayam Geprek Sambal Matah",
+            penjual: "Warung Ibu Siti",
+            lokasi: "Asrama Umar",
+            stok: 8,
+            rating: 4.9,
+            harga: 18000,
+            wa: "087734174657",
+            image: "image/ayam geprek.jpeg",
+          },
+          {
+            nama: "Mie Ayam Komplit",
+            penjual: "Mas Joko Kuliner",
+            lokasi: "Asrama Usman",
+            stok: 20,
+            rating: 4.7,
+            harga: 12000,
+            wa: "081339738112",
+            image: "image/mie ayam.jpg",
+          },
+          {
+            nama: "Soto Ayam Kuning",
+            penjual: "Warung Bu Intan",
+            lokasi: "Asrama Al-Fatih",
+            stok: 12,
+            rating: 4.6,
+            harga: 13000,
+            wa: "085739754908",
+            image: "image/soto ayam.jpg",
+          },
+          {
+            nama: "Bakso Urat Jumbo",
+            penjual: "Abang Bakso",
+            lokasi: "Asrama Umar",
+            stok: 5,
+            rating: 4.5,
+            harga: 16000,
+            wa: "081217140700",
+            image: "image/bakso.jpg",
+          },
+          {
+            nama: "Ayam Lalapan kuli",
+            penjual: "Rumah Makan Minang",
+            lokasi: "Asrama Al-Fatih",
+            stok: 10,
+            rating: 4.4,
+            harga: 20000,
+            wa: "085921209122",
+            image: "image/ayam lalapan.jpeg",
+          },
+          {
+            nama: "Pecel Lele Lamongan dan Batagor",
+            penjual: "Warung Mbak Yani",
+            lokasi: "Asrama Usman",
+            stok: 15,
+            rating: 4.3,
+            harga: 14000,
+            wa: "083182594327",
+            image: "image/pecel.jpg",
+          },
+        ],
+        minuman: [
+          {
+            nama: "Es Teh Manis",
+            penjual: "Kedai Minum Segar kucur",
+            lokasi: "Asrama Usman",
+            stok: 30,
+            rating: 4.5,
+            harga: 5000,
+            wa: "083895361949",
+            image: "image/es teh.jpg",
+          },
+          {
+            nama: "Kopi Susu Gula Aren",
+            penjual: "Kopi Kita",
+            lokasi: "Asrama Al-Fatih",
+            stok: 15,
+            rating: 4.9,
+            harga: 12000,
+            wa: "085147442590",
+            image: "image/kopi.jpg",
+          },
+          {
+            nama: "Jus Alpukat Fresh",
+            penjual: "Juice Corner",
+            lokasi: "Asrama Umar",
+            stok: 10,
+            rating: 4.7,
+            harga: 10000,
+            wa: "082146524380",
+            image: "image/jus.jpg",
+          },
+          {
+            nama: "Thai Tea Original",
+            penjual: "Thai Drink Unida",
+            lokasi: "Asrama Usman",
+            stok: 20,
+            rating: 4.6,
+            harga: 8000,
+            wa: "089518386445",
+            image: "image/thai tea.jpg",
+          },
+          {
+            nama: "Milkshake Coklat",
+            penjual: "Shake & Go",
+            lokasi: "Asrama Al-Fatih",
+            stok: 8,
+            rating: 4.4,
+            harga: 15000,
+            wa: "085147442590",
+            image: "image/milkshake.jpg",
+          },
+          {
+            nama: "Es Jeruk Peras",
+            penjual: "Warung Segar",
+            lokasi: "Asrama Umar",
+            stok: 25,
+            rating: 4.3,
+            harga: 7000,
+            wa: "085713781044",
+            image: "image/jeruk.jpg",
+          },
+          {
+            nama: "Lemon Tea Jumbo",
+            penjual: "Tea House",
+            lokasi: "Asrama Usman",
+            stok: 18,
+            rating: 4.2,
+            harga: 9000,
+            wa: "085126091930",
+            image: "image/lemon tea.jpg",
+          },
+        ],
+        snack: [
+          {
+            nama: "Cireng Isi Pedas",
+            penjual: "Snack Nusantara",
+            lokasi: "Asrama Umar",
+            stok: 25,
+            rating: 4.7,
+            harga: 8000,
+            wa: "082337596046",
+            image: "image/cireng.jpg",
+          },
+          {
+            nama: "Pisang Goreng Crispy",
+            penjual: "Gorengan Mantap",
+            lokasi: "Asrama Usman",
+            stok: 18,
+            rating: 4.8,
+            harga: 7000,
+            wa: "085792910499",
+            image: "image/pisang.jpg",
+          },
+          {
+            nama: "Risoles Mayo",
+            penjual: "Frozen Food Unida",
+            lokasi: "Asrama Al-Fatih",
+            stok: 12,
+            rating: 4.6,
+            harga: 10000,
+            wa: "082139992752",
+            image: "image/risoles.jpg",
+          },
+          {
+            nama: "Donat Mini Mix",
+            penjual: "Sweet Treats",
+            lokasi: "Asrama Umar",
+            stok: 20,
+            rating: 4.5,
+            harga: 12000,
+            wa: "083848573515",
+            image: "image/donat.jpg",
+          },
+          {
+            nama: "Kentang Goreng Balado",
+            penjual: "Camilan Pedas Mas Bro",
+            lokasi: "Asrama Usman",
+            stok: 15,
+            rating: 4.4,
+            harga: 9000,
+            wa: "082184811781",
+            image: "image/kentang.jpg",
+          },
+          {
+            nama: "Tahu Crispy Original",
+            penjual: "Gorengan Mantap",
+            lokasi: "Asrama Al-Fatih",
+            stok: 22,
+            rating: 4.3,
+            harga: 6000,
+            wa: "082229927775",
+            image: "image/tahu.jpg",
+          },
+          {
+            nama: "Lemper Ayam",
+            penjual: "Jajanan Tradisional",
+            lokasi: "Asrama Umar",
+            stok: 16,
+            rating: 4.2,
+            harga: 8000,
+            wa: "085705402470",
+            image: "image/lemper.jpg",
+          },
+        ],
+        lainnya: [
+          {
+            nama: "Paket Laundry Kilat",
+            penjual: "Laundry Express",
+            lokasi: "Asrama Al-Fatih",
+            stok: 999,
+            rating: 4.6,
+            harga: 5000,
+            wa: "087788196492",
+            image: "image/laundry.jpg",
+          },
+          {
+            nama: "Jasa Fotocopy & Print",
+            penjual: "Print Shop 24/7",
+            lokasi: "Asrama Umar",
+            stok: 999,
+            rating: 4.8,
+            harga: 500,
+            wa: "085159159754",
+            image: "image/print.jpg",
+          },
+          {
+            nama: "Paket Internet Murah",
+            penjual: "Pulsa & Kuota Center",
+            lokasi: "Asrama Usman",
+            stok: 999,
+            rating: 4.7,
+            harga: 25000,
+            wa: "089654510812",
+            image: "image/paket.jpg",
+          },
+          {
+            nama: "Les Privat Matematika",
+            penjual: "Tutor Academy",
+            lokasi: "Asrama Al-Fatih",
+            stok: 5,
+            rating: 4.9,
+            harga: 50000,
+            wa: "081330516698",
+            image: "image/mtk.jpg",
+          },
+          {
+            nama: "Service Laptop & HP",
+            penjual: "Tech Repair",
+            lokasi: "Asrama Umar",
+            stok: 999,
+            rating: 4.5,
+            harga: 75000,
+            wa: "085129954525",
+            image: "image/servise.jpg",
+          },
+          {
+            nama: "Jasa Antar Barang",
+            penjual: "GoStudent Express",
+            lokasi: "Asrama Usman",
+            stok: 999,
+            rating: 4.4,
+            harga: 3000,
+            wa: "087751721345",
+            image: "image/antar.jpg",
+          },
+          {
+            nama: "Potong Rambut Hemat",
+            penjual: "Barbershop Mahasiswa",
+            lokasi: "Asrama Al-Fatih",
+            stok: 10,
+            rating: 4.3,
+            harga: 15000,
+            wa: "082172364054",
+            image: "image/potong.jpg",
+          },
+        ],
+      };
+
+      // ============================================
+      // STATE MANAGEMENT
+      // ============================================
+
+      let isLoggedIn = false;
+      let viewMoreState = {
+        makanan: false,
+        minuman: false,
+        snack: false,
+        lainnya: false,
+      };
+      // BARU: Tracking pemesanan untuk unlock rating
+      let orderedItems = new Set();
+
+      // ============================================
+      // FUNGSI: KIRIM DATA KE SHEETDB API
+      // ============================================
+
+      async function sendToSheetDB(data) {
+        try {
+          const response = await fetch(SHEETDB_API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ data: [data] }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Gagal mengirim data ke SheetDB");
+          }
+
+          const result = await response.json();
+          return result;
+        } catch (error) {
+          console.error("Error mengirim ke SheetDB:", error);
+          throw error;
+        }
+      }
+
+      // ============================================
+      // FUNGSI: RENDER MENU CARDS (DIPERBAIKI: HORIZONTAL LAYOUT + RATING UI)
+      // ============================================
+
+      function renderMenuCards(showAll = false) {
+        Object.keys(menuData).forEach((category) => {
+          const grid = document.getElementById(`${category}Grid`);
+          const sortedMenus = menuData[category].sort(
+            (a, b) => b.rating - a.rating
+          );
+          const menusToShow =
+            showAll || viewMoreState[category]
+              ? sortedMenus
+              : sortedMenus.slice(0, 3);
+
+          grid.innerHTML = menusToShow
+            .map(
+              (menu, index) => `
+                      <div class="menu-card ${
+                        index >= 3 && !viewMoreState[category] ? "hidden" : ""
+                      }">
+                          <div class="menu-image"><img src="${
+                            menu.image
+                          }" alt="${
+                menu.nama
+              }" style="width:100%; height:100%; object-fit:cover;"></div>
+                        <div class="menu-info">
+                            <div class="menu-top">
+                                <div class="menu-name">${menu.nama}</div>
+                                <div class="menu-seller">👤 ${
+                                  menu.penjual
+                                }</div>
+                                <div class="menu-location">📍 ${
+                                  menu.lokasi
+                                }</div>
+                                <div class="menu-details">
+                                    <div class="menu-rating">${"⭐".repeat(
+                                      Math.floor(menu.rating)
+                                    )} ${menu.rating}</div>
+                                    <div class="menu-stock ${
+                                      menu.stok < 10 ? "stock-low" : ""
+                                    }">
+                                        📦 Stok: ${menu.stok} ${
+                menu.stok < 10 ? "(Terbatas!)" : ""
+              }
+                                    </div>
+                                </div>
+                                ${
+                                  isLoggedIn
+                                    ? `
+                                <div class="rating-section">
+                                    <div class="rating-label">${
+                                      orderedItems.has(menu.nama)
+                                        ? "⭐ Beri Rating:"
+                                        : "🔒 Rating (Pesan dulu untuk unlock)"
+                                    }</div>
+                                    <div class="star-rating" data-menu="${
+                                      menu.nama
+                                    }">
+                                        <span class="star ${
+                                          !orderedItems.has(menu.nama)
+                                            ? "disabled"
+                                            : ""
+                                        }" onclick="rateMenu(this, 1)">☆</span>
+                                        <span class="star ${
+                                          !orderedItems.has(menu.nama)
+                                            ? "disabled"
+                                            : ""
+                                        }" onclick="rateMenu(this, 2)">☆</span>
+                                        <span class="star ${
+                                          !orderedItems.has(menu.nama)
+                                            ? "disabled"
+                                            : ""
+                                        }" onclick="rateMenu(this, 3)">☆</span>
+                                        <span class="star ${
+                                          !orderedItems.has(menu.nama)
+                                            ? "disabled"
+                                            : ""
+                                        }" onclick="rateMenu(this, 4)">☆</span>
+                                        <span class="star ${
+                                          !orderedItems.has(menu.nama)
+                                            ? "disabled"
+                                            : ""
+                                        }" onclick="rateMenu(this, 5)">☆</span>
+                                    </div>
+                                </div>
+                                `
+                                    : ""
+                                }
+                            </div>
+                            <div class="menu-bottom">
+                                <div class="menu-price">Rp ${menu.harga.toLocaleString(
+                                  "id-ID"
+                                )}</div>
+                                <button class="order-btn" 
+                                        onclick="handleOrder('${menu.nama}', '${
+                menu.wa
+              }', '${menu.penjual}', ${menu.harga}, '${menu.lokasi}')" 
+                                        ${!isLoggedIn ? "disabled" : ""}>
+                                    ${
+                                      isLoggedIn
+                                        ? "Pesan Sekarang"
+                                        : "Login untuk Pesan"
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            )
+            .join("");
+        });
+      }
+
+      // ============================================
+      // FUNGSI: VIEW MORE (BARU - DINAMIS) - DIPERBAIKI: Selalu tampilkan 4 menu lagi
+      // ============================================
+
+      function viewMore(event, category) {
+        event.preventDefault();
+
+        const grid = document.getElementById(`${category}Grid`);
+        const hiddenCards = grid.querySelectorAll(".menu-card.hidden");
+
+        if (hiddenCards.length > 0) {
+          // PERBAIKAN: Tampilkan tepat 4 menu berikutnya (atau sisa yang ada jika < 4)
+          const cardsToShow = Array.from(hiddenCards).slice(0, 4);
+          cardsToShow.forEach((card, idx) => {
+            card.classList.remove("hidden");
+            card.style.animation = "slideInLeft 0.5s ease forwards";
+            card.style.animationDelay = `${idx * 0.1}s`;
+          });
+
+          // Update button text jika sudah tidak ada hidden cards lagi
+          const remainingHidden =
+            grid.querySelectorAll(".menu-card.hidden").length;
+          if (remainingHidden === 0) {
+            event.target.textContent = "Show less";
+            viewMoreState[category] = true;
+          } else {
+            event.target.textContent = `View more... (${remainingHidden} lagi)`;
+          }
+        } else {
+          // Collapse back to top 3
+          const allCards = grid.querySelectorAll(".menu-card");
+          allCards.forEach((card, index) => {
+            if (index >= 3) {
+              card.classList.add("hidden");
+            }
+          });
+          event.target.textContent = "View more...";
+          viewMoreState[category] = false;
+        }
+      }
+
+      // ============================================
+      // FUNGSI: RATING SYSTEM (DIPERBAIKI: Hanya bisa rating setelah pesan)
+      // ============================================
+
+      async function rateMenu(star, rating) {
+        if (!isLoggedIn) return;
+
+        const container = star.parentElement;
+        const menuName = container.getAttribute("data-menu");
+
+        // PERBAIKAN: Cek apakah sudah pernah pesan menu ini
+        if (!orderedItems.has(menuName)) {
+          alert(
+            "⚠️ Anda harus memesan menu ini terlebih dahulu sebelum memberi rating!"
+          );
+          return;
+        }
+
+        const stars = container.querySelectorAll(".star");
+
+        // Reset all stars
+        stars.forEach((s) => {
+          s.classList.remove("active");
+          s.textContent = "☆";
+        });
+
+        // Activate selected stars
+        for (let i = 0; i < rating; i++) {
+          stars[i].classList.add("active");
+          stars[i].textContent = "⭐";
+        }
+
+        // Kirim rating ke SheetDB
+        try {
+          const ratingData = {
+            type: "rating",
+            email: currentUserEmail,
+            menu_name: menuName,
+            rating: rating,
+            timestamp: new Date().toISOString(),
+          };
+
+          await sendToSheetDB(ratingData);
+          alert(
+            `✅ Terima kasih! Anda memberi ${rating} bintang untuk "${menuName}". Data telah tersimpan!`
+          );
+        } catch (error) {
+          alert(
+            `✅ Rating ${rating} bintang untuk "${menuName}" tersimpan (lokal). Gagal sync ke server.`
+          );
+        }
+      }
+
+      // ============================================
+      // FUNGSI: SCROLL TO CATEGORY
+      // ============================================
+
+      function scrollToCategory(categoryId) {
+        const element = document.getElementById(categoryId);
+        const headerHeight = 80; // Header
+        const navHeight = 60; // Category nav
+        const totalHeight = headerHeight + navHeight;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - totalHeight - 20;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+
+      // ============================================
+      // FUNGSI: MODAL MANAGEMENT
+      // ============================================
+
+      function openModal() {
+        document.getElementById("loginModal").classList.add("active");
+      }
+
+      function closeModal() {
+        document.getElementById("loginModal").classList.remove("active");
+        const emailEl = document.getElementById("emailInput");
+        if (emailEl) emailEl.value = "";
+        document.getElementById("passwordInput").value = "";
+      }
+
+      // Helper: format WA number to international format for wa.me links
+      function formatPhoneForWa(number) {
+        if (!number) return "";
+        // remove all non-digit characters
+        let digits = number.replace(/\D/g, "");
+
+        // Common Indonesian formats: 08xxxx -> 628xxxx, 8xxxx -> 628xxxx, +62xxxx -> 62xxxx
+        if (digits.startsWith("0")) {
+          digits = "62" + digits.slice(1);
+        } else if (digits.startsWith("+")) {
+          digits = digits.replace(/^\+/, "");
+        } else if (digits.startsWith("8")) {
+          digits = "62" + digits;
+        }
+
+        return digits;
+      }
+
+      // ============================================
+      // FUNGSI: SIMPLE EMAIL/PASSWORD AUTH (LOCALSTORAGE + SHEETDB)
+      // - Password disimpan sebagai SHA-256 hex (client-side hashing)
+      // - Users disimpan pada localStorage key 'unifood_users'
+      // - Session disimpan pada localStorage key 'unifood_currentUser'
+      // - Data registrasi dikirim ke SheetDB
+      // ============================================
+
+      let users = {}; // { email: passwordHash }
+      let currentUserEmail = null;
+
+      async function hashPassword(password) {
+        const enc = new TextEncoder();
+        const data = enc.encode(password);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        return hashHex;
+      }
+
+      async function registerUser() {
+        const email = (document.getElementById("emailInput") || {}).value || "";
+        const password =
+          (document.getElementById("passwordInput") || {}).value || "";
+
+        if (!email || !password) {
+          alert("Mohon isi email dan password untuk mendaftar.");
+          return;
+        }
+
+        const emailLower = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailLower)) {
+          alert("Mohon masukkan alamat email yang valid.");
+          return;
+        }
+
+        // load users if not present
+        if (!users) users = {};
+        if (users[emailLower]) {
+          alert(
+            "Email sudah terdaftar. Silakan login atau gunakan email lain."
+          );
+          return;
+        }
+
+        const pwHash = await hashPassword(password);
+        users[emailLower] = pwHash;
+        localStorage.setItem("unifood_users", JSON.stringify(users));
+
+        // Kirim data registrasi ke SheetDB
+        try {
+          const registrationData = {
+            type: "registration",
+            email: emailLower,
+            password_hash: pwHash,
+            timestamp: new Date().toISOString(),
+          };
+
+          await sendToSheetDB(registrationData);
+        } catch (error) {
+          console.error("Gagal mengirim data registrasi ke SheetDB:", error);
+          // Tetap lanjutkan proses registrasi meskipun gagal kirim ke SheetDB
+        }
+
+        // auto-login after register
+        currentUserEmail = emailLower;
+        localStorage.setItem("unifood_currentUser", currentUserEmail);
+        isLoggedIn = true;
+        updateLoginButtonUI();
+        closeModal();
+        renderMenuCards();
+        alert(
+          "Pendaftaran berhasil dan data tersimpan! Anda login sebagai " +
+            currentUserEmail
+        );
+      }
+
+      async function handleLogin() {
+        const email = (document.getElementById("emailInput") || {}).value || "";
+        const password =
+          (document.getElementById("passwordInput") || {}).value || "";
+
+        if (!email || !password) {
+          alert("Mohon isi email dan password!");
+          return;
+        }
+
+        const emailLower = email.trim().toLowerCase();
+        const storedHash = users[emailLower];
+        if (!storedHash) {
+          alert("Email belum terdaftar. Silakan daftar terlebih dahulu.");
+          return;
+        }
+
+        const pwHash = await hashPassword(password);
+        if (pwHash === storedHash) {
+          isLoggedIn = true;
+          currentUserEmail = emailLower;
+          localStorage.setItem("unifood_currentUser", currentUserEmail);
+
+          // Kirim data login ke SheetDB
+          try {
+            const loginData = {
+              type: "login",
+              email: emailLower,
+              timestamp: new Date().toISOString(),
+            };
+
+            await sendToSheetDB(loginData);
+          } catch (error) {
+            console.error("Gagal mengirim data login ke SheetDB:", error);
+          }
+
+          updateLoginButtonUI();
+          closeModal();
+          renderMenuCards();
+          alert("Selamat datang, " + currentUserEmail + "! 🎉");
+        } else {
+          alert("Password salah.");
+        }
+      }
+
+      function handleLogout() {
+        isLoggedIn = false;
+        currentUserEmail = null;
+        localStorage.removeItem("unifood_currentUser");
+        updateLoginButtonUI();
+        renderMenuCards();
+        alert("Anda telah logout. Sampai jumpa! 👋");
+      }
+
+      function updateLoginButtonUI() {
+        const btn = document.getElementById("loginBtn");
+        if (!btn) return;
+        if (isLoggedIn && currentUserEmail) {
+          btn.textContent = "Logout (" + currentUserEmail + ")";
+          btn.classList.add("logout-btn");
+          btn.onclick = handleLogout;
+        } else {
+          btn.textContent = "Login";
+          btn.classList.remove("logout-btn");
+          btn.onclick = openModal;
+        }
+      }
+
+      // ============================================
+      // FUNGSI: HANDLE ORDER (WHATSAPP) - DIPERBAIKI: Unlock rating setelah pesan + KIRIM KE SHEETDB
+      // ============================================
+
+      async function handleOrder(namaMenu, nomorWA, penjual, harga, lokasi) {
+        if (!isLoggedIn) {
+          alert("⚠️ Silakan login terlebih dahulu untuk memesan!");
+          openModal();
+          return;
+        }
+
+        // Konfirmasi pemesanan
+        const proceed = window.confirm(
+          `📱 Anda akan diarahkan ke WhatsApp untuk memesan "${namaMenu}". Lanjutkan?`
+        );
+
+        if (proceed) {
+          // Tandai item sudah dipesan (unlock rating)
+          orderedItems.add(namaMenu);
+
+          // Simpan ke dalam memory (agar rating bisa diakses)
+          localStorage.setItem(
+            "orderedItems",
+            JSON.stringify([...orderedItems])
+          );
+
+          // Kirim data pemesanan ke SheetDB
+          try {
+            const orderData = {
+              type: "order",
+              email: currentUserEmail,
+              menu_name: namaMenu,
+              penjual: penjual,
+              lokasi: lokasi,
+              harga: harga,
+              nomor_wa: nomorWA,
+              timestamp: new Date().toISOString(),
+            };
+
+            await sendToSheetDB(orderData);
+          } catch (error) {
+            console.error("Gagal mengirim data order ke SheetDB:", error);
+          }
+
+          // Format nomor WA ke bentuk internasional yang diterima oleh wa.me
+          const cleanNumber = formatPhoneForWa(nomorWA);
+          if (!cleanNumber) {
+            alert("⚠️ Nomor WhatsApp penjual tidak valid.");
+            return;
+          }
+
+          // Buka WhatsApp dengan pesan yang telah dienkode
+          const message = `Halo, saya ingin memesan *${namaMenu}*`;
+          const waLink = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(
+            message
+          )}`;
+          window.open(waLink, "_blank");
+
+          // Re-render untuk update status rating
+          setTimeout(() => {
+            renderMenuCards();
+            alert(
+              "✅ Data pesanan tersimpan! Setelah menerima pesanan, Anda bisa memberi rating untuk menu ini!"
+            );
+          }, 500);
+        }
+      }
+
+      // ============================================
+      // FUNGSI: SEARCH (SEDERHANA) - DIPERBAIKI: Tambah search lokasi/asrama
+      // ============================================
+
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", function (e) {
+          const searchTerm = e.target.value.toLowerCase();
+
+          if (searchTerm === "") {
+            renderMenuCards();
+            return;
+          }
+
+          Object.keys(menuData).forEach((category) => {
+            const grid = document.getElementById(`${category}Grid`);
+            // PERBAIKAN: Tambah filter berdasarkan lokasi/asrama
+            const filteredMenus = menuData[category].filter(
+              (menu) =>
+                menu.nama.toLowerCase().includes(searchTerm) ||
+                menu.penjual.toLowerCase().includes(searchTerm) ||
+                menu.lokasi.toLowerCase().includes(searchTerm)
+            );
+
+            if (filteredMenus.length > 0) {
+              grid.innerHTML = filteredMenus
+                .map(
+                  (menu) => `
+                        <div class="menu-card">
+                           <div class="menu-image">
+    <img src="${menu.image}" alt="${
+                    menu.nama
+                  }" style="width:100%; height:100%; object-fit:cover;">
+</div>
+                            <div class="menu-info">
+                                <div class="menu-top">
+                                    <div class="menu-name">${menu.nama}</div>
+                                    <div class="menu-seller">👤 ${
+                                      menu.penjual
+                                    }</div>
+                                    <div class="menu-location">📍 ${
+                                      menu.lokasi
+                                    }</div>
+                                    <div class="menu-details">
+                                        <div class="menu-rating">${"⭐".repeat(
+                                          Math.floor(menu.rating)
+                                        )} ${menu.rating}</div>
+                                        <div class="menu-stock ${
+                                          menu.stok < 10 ? "stock-low" : ""
+                                        }">
+                                            📦 Stok: ${menu.stok} ${
+                    menu.stok < 10 ? "(Terbatas!)" : ""
+                  }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="menu-bottom">
+                                    <div class="menu-price">Rp ${menu.harga.toLocaleString(
+                                      "id-ID"
+                                    )}</div>
+                                    <button class="order-btn" 
+                                            onclick="handleOrder('${
+                                              menu.nama
+                                            }', '${menu.wa}', '${
+                    menu.penjual
+                  }', ${menu.harga}, '${menu.lokasi}')" 
+                                            ${!isLoggedIn ? "disabled" : ""}>
+                                        ${
+                                          isLoggedIn
+                                            ? "Pesan Sekarang"
+                                            : "Login untuk Pesan"
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `
+                )
+                .join("");
+            } else {
+              grid.innerHTML =
+                '<p style="text-align: center; color: #999; padding: 20px;">Tidak ada menu ditemukan</p>';
+            }
+          });
+        });
+
+      // ============================================
+      // INITIALIZATION
+      // ============================================
+
+      // Load users and session from localStorage
+      const savedUsers = localStorage.getItem("unifood_users");
+      if (savedUsers) {
+        try {
+          users = JSON.parse(savedUsers) || {};
+        } catch (e) {
+          users = {};
+        }
+      }
+
+      const savedCurrent = localStorage.getItem("unifood_currentUser");
+      if (savedCurrent) {
+        currentUserEmail = savedCurrent;
+        isLoggedIn = true;
+      }
+
+      document.getElementById("loginBtn").addEventListener("click", openModal);
+
+      // Load ordered items dari localStorage saat halaman dimuat
+      const savedOrders = localStorage.getItem("orderedItems");
+      if (savedOrders) {
+        orderedItems = new Set(JSON.parse(savedOrders));
+      }
+
+      // Update login button UI based on session
+      updateLoginButtonUI();
+
+      // Initial render
+      renderMenuCards();
+    </script>
+  </body>
+</html>
